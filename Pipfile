@@ -4,12 +4,14 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pylint = "*"
 
 [packages]
 python-telegram-bot = "*"
 flask = "*"
 gunicorn = "*"
 requests = "*"
+pprint = "*"
 
 [requires]
 python_version = "3.7"
