@@ -1,8 +1,21 @@
 ---
-title: "Ubike Bot"
+title: "UbikeAnywhereBot"
 tags: SITCON, bot, telegram
 ---
-# UBikeAnywhereBot
+
+# UbikeAnywhereBot
+
+## Backgrouds
+### Ubike 服務區域
+1. 臺北: 400
+2. 新北: 561
+3. 桃園: 305
+4. 新竹市 & 竹科: 57
+6. 苗栗: 30
+7. 臺中: 326
+8. 彰化: 68
+
+**YouBike 全臺站點: 1747**
 
 
 ## Usage
