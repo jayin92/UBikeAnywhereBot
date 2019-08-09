@@ -13,10 +13,9 @@ from pprint import pprint
 
 
 
-app_id = "839bc6f695d1479a83a04c0e7df512a1"
-app_key = "_Lm4jba4HpNdyXUpjNxgdiLmnlY"
+app_id = "839bc6f695d1479a83a04c0e7df512a1" # app_id
+app_key = "_Lm4jba4HpNdyXUpjNxgdiLmnlY" # app_key
 class Auth():
-
     def __init__(self, app_id, app_key):
         self.app_id = app_id
         self.app_key = app_key
@@ -36,9 +35,9 @@ class Auth():
             'Accept - Encoding': 'gzip'
         }
 
-
+# use this class, you can get correct header of ptx and get data from it
 a = Auth(app_id, app_key)
 
-taoyaun =  req.get("https://ptx.transportdata.tw/MOTC/v2/Bike/Availability/Taipei/?$format=JSON", headers=a.get_auth_header())
+taoyaun =  req.get("https://ptx.transportdata.tw/MOTC/v2/Bike/Availability/Taipei/?$format=JSON", headers=a.get_auth_header()) #get all station info in Taoyaun
 
 pprint(taoyaun.json())
