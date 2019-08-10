@@ -113,9 +113,9 @@ def get_station_availability(all_station_availability, stationUID, rent):
     for station in all_station_availability:
         if station["StationUID"] == stationUID:
             if rent:
-                return int(station["AvailableRentBikes"]) > 0
+                return int(station["AvailableRentBikes"])
             else:
-                return int(station["AvailableReturnBikes"]) > 0
+                return int(station["AvailableReturnBikes"])
 
 
 
@@ -127,7 +127,7 @@ def search(all_station_availability, all_station_info, cord, rent):
     _bike = get_station_availability(all_station_availability, _UID, rent)
 
     for station in all_station_info[1:]:
-        if get_station_availability(all_station_availability, station["StationUID"], rent):
+        if get_station_availability(all_station_availability, station["StationUID"], rent) > 0:
             temp = distance((station["StationPosition"]["PositionLat"], station["StationPosition"]["PositionLon"]), cord)
             if temp < _min:
                 _min = temp

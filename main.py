@@ -15,6 +15,7 @@ des_cord = (1,1)
 des_keyword = ""
 dep_keyword = ""
 a = ""
+b = ""
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",level=logging.INFO)
 
 
@@ -46,6 +47,7 @@ def start(bot ,update):
     
 def ask_dep(bot, update):
     global a
+
     callback_data = update.callback_query.data
     if(callback_data=="1"):
         location_handler = MessageHandler(Filters.location, location, edited_updates=True)
@@ -53,13 +55,13 @@ def ask_dep(bot, update):
 
     else:
         #手動enter location
-        update.callback_query.edit_message_text("請輸入出發地的關鍵字（名稱、地址、經緯度）")
         a = MessageHandler(Filters.text, dep_text)
+        update.callback_query.edit_message_text("請輸入出發地的關鍵字（名稱、地址、經緯度）")
         updater.dispatcher.add_handler(a)
 
 
 def dep_text(bot,update):
-    global dep_cord, dep_keyword,a
+    global dep_cord, dep_keyword, a
     updater.dispatcher.remove_handler(a)
     dep_keyword = update.message.text
     dep_cord = google_map_api.google_map_api(dep_keyword)
@@ -75,11 +77,14 @@ def dep_text(bot,update):
     updater.dispatcher.add_handler(CommandHandler("否", start))
 
 def ask_des(bot, update):
+    global b
     update.message.reply_text("請輸入目的地的關鍵字（名稱、地址、經緯度）")
-    updater.dispatcher.add_handler(MessageHandler(Filters.text, des_text))
+    b = MessageHandler(Filters.text, des_text)
+    updater.dispatcher.add_handler(b)
 
 def des_text(bot, update):
-    global des_cord, des_keyword
+    global des_cord, des_keyword, b
+    updater.dispatcher.remove_handler(b)
     des_keyword = update.message.text
     des_cord = google_map_api.google_map_api(des_keyword)
     # update.message.reply_text(get_data.search(all_station_availability, all_station_info, cord, 1)["name"])
@@ -100,18 +105,20 @@ def ubike_check(bot, update):
     des_bike = get_data.search(all_station_availability, all_station_info, des_cord, 0)
 
     route = "{}➡️{}➡️{}➡️{}".format(dep_keyword, dep_bike["name"], des_bike["name"], des_keyword)
-    update.message.reply_text("路線：")
+    update.message.reply_text("🗺️路線：")
     update.message.reply_text(route)
     url = get_data.get_direction_url(dep_keyword, dep_bike["cord"], des_bike["cord"], des_keyword)
     header = {"Content-Type":"application/json", "reurl-api-key":"4070df69d794e53c114b353100ba214de3d6b7398d894494ab38acc62b055f6689"}
     data = {"url": url}
     
     r = requests.post("https://api.reurl.cc/shorten", headers=header, data=json.dumps(data))
-    update.message.reply_text("導航網址：")
+    update.message.reply_text("🧭導航網址：")
     update.message.reply_text(r.json()["short_url"])
     
+    update.message.reply_text(" 🚲 站點資訊：")
+    update.message.reply_text("▶️{}（借車站）\n目前車輛數目：{}".format(dep_bike["name"], dep_bike["bike"]))
+    update.message.reply_text("▶️{}（還車站）\n目前空位數目：{}".format(des_bike["name"], des_bike["bike"]))
 
-    
 
 
 updater = Updater("979392062:AAHsqCfx2cy0db1eMNV4qVKFkuaM-Xmh6C0")
