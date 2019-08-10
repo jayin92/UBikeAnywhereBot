@@ -1,55 +1,38 @@
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from geopy.geocoders import Nominatim
-#import startfuc
-#import locationfuc
-import random, os
-import logging
-logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",level=logging.INFO)
-#MessageHandler(Filters.text, say_something)
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
+import os,random
 
-p=0
-position=()
-deatination=()
+yes = KeyboardButton("現在位置",False, True)
+no = KeyboardButton("其他位置")
 
-def location(bot, update):
-    message = None
-    if update.edited_message:
-        message = update.edited_message
-    else:
-        message = update.message
-    current_pos = (message.location.latitude, message.location.longitude)
-    update.message.reply_text(current_pos)
-    #position=current_pos
-    print(current_pos)
+reply_keyboard_markup = ReplyKeyboardMarkup([[yes],[no]])
 
-def start(bot ,update):
-    callback_data=0
-    #要不要手動輸入
-    keyboard = [[InlineKeyboardButton("現在位置", callback_data='1'),
-                 InlineKeyboardButton("其他地點", callback_data='0')]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text('請輸入出發地位置\n您可以選擇使用現在位置或輸入其他地點', reply_markup=reply_markup)
-    
-    
-def ask_dep(bot, update):
-    callback_data = update.callback_query.data
-    if(callback_data=="1"):
-        location_handler = MessageHandler(Filters.location, location, edited_updates=True)
-        updater.dispatcher.add_handler(location_handler)
+start_lat = 0
+start_lng = 0
 
-    else:
-        #手動enter location
-        update.callback_query.edit_message_text("請輸入出發地的關鍵字（名稱、地址、經緯度）")
-        updater.dispatcher.add_handler(MessageHandler(Filters.text, dep_text))
+stop_lat = 0
+stop_lng = 0
 
-def dep_text(bot,update):
-    
+def ask_location(bot, update):
+    update.message.reply_text("請輸入其他位置", reply_markup=reply_keyboard_markup)
+
+def start(bot, update):
+    print("qwqw")
+    update.message.reply_text("你要使用現在位置或其他位置？", reply_markup=reply_keyboard_markup)
+
+def now_location(bot, update):
+
+    print(update.message.location)
+    start_lat = update.message.location['latitude']
+    start_lng = update.message.location['longitude']
 
 
-updater = Updater("905272267:AAELvWp5b4SGt--CQRuuXQKHCxgNRz_M7lQ")
+updater = Updater("970742110:AAHA5UXQWJDjYFJi_KNm84Umug4RcSMkCZE")
+
 updater.dispatcher.add_handler(CommandHandler('start', start))
-updater.dispatcher.add_handler(CallbackQueryHandler(askDep))
+updater.dispatcher.add_handler(MessageHandler(Filters.location, now_location))
+updater.dispatcher.add_handler(MessageHandler(Filters.text, other_location))
+
 
 updater.start_polling()
 updater.idle()
