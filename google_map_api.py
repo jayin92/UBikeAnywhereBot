@@ -4,9 +4,10 @@ import requests
 
 def google_map_api(search_place):
 
-    api_key = "AIzaSyD57zm-VEPud6YTbl6XKpu7kZIdlHxHZIQ"
+    config = configparser.ConfigParser()
+    config.read('config.ini')
 
-    input_type = "textquery"
+    api_key = config["GOOGLE"]["APP_KEY"]
 
     my_params = {
         "address" : search_place,
