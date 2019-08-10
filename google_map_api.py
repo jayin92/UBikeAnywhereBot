@@ -1,4 +1,5 @@
 import requests
+import configparser
 
 #info from https://developers.google.com/places/web-service/search
 
@@ -27,5 +28,4 @@ def google_map_api(search_place):
     else:
         return None
 
-print(google_map_api(input()))
 
