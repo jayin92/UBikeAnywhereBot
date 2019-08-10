@@ -3,7 +3,7 @@ import logging
 
 import telegram
 from flask import Flask, request
-from telegram.ext import Dispatcher, MessageHandler, Filters
+from telegram.ext import Dispatcher, MessageHandler, CommandHandler, Filters
 
 # Load data from config.ini file
 config = configparser.ConfigParser()
@@ -44,6 +44,7 @@ dispatcher = Dispatcher(bot, None)
 
 # Add handler for handling message, there are many kinds of message. For this handler, it particular handle text
 # message.
+dispatcher.add_handler(CommandHandler("test"))
 dispatcher.add_handler(MessageHandler(Filters.text, reply_handler))
 
 if __name__ == "__main__":
