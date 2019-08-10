@@ -1,43 +1,141 @@
 # ptx app id:  839bc6f695d1479a83a04c0e7df512a1
 # ptx app key: _Lm4jba4HpNdyXUpjNxgdiLmnlY 
+# -*- coding: UTF-8 -*-
 
+import configparser
 
-from hashlib import sha1
-import hmac
-from wsgiref.handlers import format_date_time
-from datetime import datetime
-from time import mktime
-import base64
 import requests as req
+import math
+from ptxAuth import Auth 
 from pprint import pprint
 
+def distance(loc1, loc2):
+    """
+    Function that calculate distance bewteen two locations
+
+    Parameters:
+        loc1 - first location coordinates (tuple)(Lat, Lon)
+        loc2 - second location coordinates (tuple)(Lat, Lon)
+
+    Returns:
+        a float equal to distance between two locations
+    """
+    dy = loc1[0] - loc2[0]
+    dx = loc1[1] - loc2[0]
+
+    return math.sqrt(dx**2 + dy**2)
 
 
-app_id = "839bc6f695d1479a83a04c0e7df512a1" # app_id
-app_key = "_Lm4jba4HpNdyXUpjNxgdiLmnlY" # app_key
-class Auth():
-    def __init__(self, app_id, app_key):
-        self.app_id = app_id
-        self.app_key = app_key
+def get_direction_url(departure, station1, station2, destination):
+    """
+    Function that return google maps direction
 
-    def get_auth_header(self):
-        xdate = format_date_time(mktime(datetime.now().timetuple()))
-        hashed = hmac.new(self.app_key.encode('utf8'), ('x-date: ' + xdate).encode('utf8'), sha1)
-        signature = base64.b64encode(hashed.digest()).decode()
+    Parameters:
+        departure: departue's name or address or coordinates
+        station1: the station near departure, station's coordinates
+        station2: the station near destination, station's coordinates
+        destination: destination's name or address or coordinates
+    """
+    url = "https://www.google.com/maps/dir/?api=1&origin={}&destination={}&waypoints={}|{}&travelmode=motorcycling".format(departure, destination, station1, station2)
 
-        authorization = 'hmac username="' + self.app_id + '", ' + \
-                        'algorithm="hmac-sha1", ' + \
-                        'headers="x-date", ' + \
-                        'signature="' + signature + '"'
-        return {
-            'Authorization': authorization,
-            'x-date': format_date_time(mktime(datetime.now().timetuple())),
-            'Accept - Encoding': 'gzip'
-        }
+    return url
+
+
+
+def get_all_station_info(all_station_info):
+    """
+    Funtion that get station info data from ptx api and store infos in all_station_info list
+
+    Parameters:
+        all_station_info: a list store station info
+    """
+    for city in cities:
+        url = "https://ptx.transportdata.tw/MOTC/v2/Bike/Station/" + city + "/?$format=JSON"
+        r = req.get(url, headers=a.get_auth_header())
+        city_info = r.json()
+        for station in city_info:
+            all_station_info.append(station)
+
+def get_all_station_availability(all_station_availability):
+    """
+    Funtion that get station info data from ptx api and store infos in all_station_availability list
+
+    Parameters:
+        all_station_availability: a list store station availability
+    """
+    for city in cities:
+        url = "https://ptx.transportdata.tw/MOTC/v2/Bike/Availability/" + city + "/?$format=JSON"
+        r = req.get(url, headers=a.get_auth_header())
+        city_info = r.json()
+        for station in city_info:
+            all_station_availability.append(station)
+
+def get_station_availability(all_station_availability, stationUID, rent):
+    """
+    Functions that return station's available rent bikes if you'll rent there, 
+    if you don't, it will return station's available return bikes
+
+    Parameters:
+        all_station_availability: a list store station availability (list)
+        stationUID: a unique ID for every Ubike station(provided from PTX) (str)
+        rent: If you'll rent bike there (bool)
+
+    Return:
+        return a interger
+    """
+    for station in all_station_availability:
+        if station["StationUID"] == stationUID):
+            if rent:
+                return int(station["AvailableRentBikes"])
+            else:
+                return int(station["AvailableReturnBikes"])
+
+
+
+# Load data from config.ini file
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+app_id = config["PTX"]["APP_ID"] # app_id
+app_key = config["PTX"]["APP_KEY"] # app_key
+
+all_station_info = []
+all_station_availability = []
+
+cities = [
+    "Taipei",
+    "Taichung",
+    "Taoyuan",
+    "NewTaipei",
+    "ChanghuaCounty",
+    "MiaoliCounty",
+    "Hsinchu"
+]
+'''
+臺北: 400
+新北: 561
+桃園: 305
+新竹市 & 竹科: 57
+苗栗: 30
+臺中: 326
+彰化: 68
+'''
 
 # use this class, you can get correct header of ptx and get data from it
 a = Auth(app_id, app_key)
 
-taoyaun =  req.get("https://ptx.transportdata.tw/MOTC/v2/Bike/Availability/Taipei/?$format=JSON", headers=a.get_auth_header()) #get all station info in Taoyaun
 
-pprint(taoyaun.json())
+"""
+PTX API, dict type:
+{
+    'StationUID': 'TPE0001', 
+    'StationID': '0001', 
+    'AuthorityID': 'TPE', 
+    'StationName': {'Zh_tw': '捷運市政府站(3號出口)', 'En': 'MRT Taipei City Hall Stataion(Exit 3)-2'}, 
+    'StationPosition': {'PositionLat': 25.0408578889, 'PositionLon': 121.567904444}, 
+    'StationAddress': {'Zh_tw': '忠孝東路/松仁路(東南側)', 'En': 'The S.W. side of Road Zhongxiao East Road & Road Chung Yan.'}, 
+    'BikesCapacity': 180, 
+    'SrcUpdateTime': '2019-08-10T19:14:37+08:00', 
+    'UpdateTime': '2019-08-10T19:16:30+08:00'
+}
+"""
