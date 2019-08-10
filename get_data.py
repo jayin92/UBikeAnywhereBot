@@ -8,6 +8,7 @@ import requests as req
 import math
 from ptxAuth import Auth 
 from pprint import pprint
+import json
 
 def distance(loc1, loc2):
     """
@@ -41,14 +42,8 @@ def get_direction_url(departure, station1, station2, destination):
     return url
 
 
-
-def get_all_station_info(all_station_info):
-    """
-    Funtion that get station info data from ptx api and store infos in all_station_info list
-
-    Parameters:
-        all_station_info: a list store station info
-    """
+def write_all_station_info():
+    all_station_info = []
     for city in cities:
         url = "https://ptx.transportdata.tw/MOTC/v2/Bike/Station/" + city + "/?$format=JSON"
         r = req.get(url, headers=a.get_auth_header())
@@ -56,19 +51,51 @@ def get_all_station_info(all_station_info):
         for station in city_info:
             all_station_info.append(station)
 
-def get_all_station_availability(all_station_availability):
+    js = json.dumps(all_station_info)
+
+    with open("all_station_info.json", "w") as fp:
+        fp.write(js)
+
+
+
+def load_all_station_info():
     """
-    Funtion that get station info data from ptx api and store infos in all_station_availability list
+    Funtion that get station info data from ptx api and store infos in all_station_info list
 
     Parameters:
-        all_station_availability: a list store station availability
+        all_station_info: a list store station info
     """
+    with open("all_station_info.json", "r") as fp:
+        all_station_info = json.load(fp)
+    
+    return all_station_info
+
+
+def write_all_station_availability():
+    all_station_availability = []
     for city in cities:
         url = "https://ptx.transportdata.tw/MOTC/v2/Bike/Availability/" + city + "/?$format=JSON"
         r = req.get(url, headers=a.get_auth_header())
         city_info = r.json()
         for station in city_info:
             all_station_availability.append(station)
+
+    js = json.dumps(all_station_availability)
+
+    with open("all_station_availability.json", "w") as fp:
+        fp.write(js)
+def load_all_station_availability():
+    """
+    Funtion that get station info data from ptx api and store infos in all_station_availability list
+
+    Parameters:
+        all_station_availability: a list store station availability
+    """
+    with open("all_station_availability.json", "r") as fp:
+        all_station_availability = json.load(fp)
+    
+    return all_station_availability
+
 
 def get_station_availability(all_station_availability, stationUID, rent):
     """
@@ -86,9 +113,9 @@ def get_station_availability(all_station_availability, stationUID, rent):
     for station in all_station_availability:
         if station["StationUID"] == stationUID:
             if rent:
-                return int(station["AvailableRentBikes"])
+                return int(station["AvailableRentBikes"]) > 0
             else:
-                return int(station["AvailableReturnBikes"])
+                return int(station["AvailableReturnBikes"]) > 0
 
 
 
@@ -100,13 +127,14 @@ def search(all_station_availability, all_station_info, cord, rent):
     _bike = get_station_availability(all_station_availability, _UID, rent)
 
     for station in all_station_info[1:]:
-        temp = distance((station["StationPosition"]["PositionLat"], station["StationPosition"]["PositionLon"]), cord)
-        if temp < _min:
-            _min = temp
-            _name = station["StationName"]["Zh_tw"]
-            _UID = station["StationUID"]
-            _cord = (station["StationPosition"]["PositionLat"], station["StationPosition"]["PositionLon"])
-            _bike = get_station_availability(all_station_availability, _UID, rent)
+        if get_station_availability(all_station_availability, station["StationUID"], rent):
+            temp = distance((station["StationPosition"]["PositionLat"], station["StationPosition"]["PositionLon"]), cord)
+            if temp < _min:
+                _min = temp
+                _name = station["StationName"]["Zh_tw"]
+                _UID = station["StationUID"]
+                _cord = (station["StationPosition"]["PositionLat"], station["StationPosition"]["PositionLon"])
+                _bike = get_station_availability(all_station_availability, _UID, rent)
 
 
 

@@ -5,12 +5,26 @@ from geopy.geocoders import Nominatim
 #import locationfuc
 import random, os
 import logging
+import get_data
+import google_map_api
+import time
+
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",level=logging.INFO)
 #MessageHandler(Filters.text, say_something)
 
 p=0
 position=()
 deatination=()
+
+dep_keyword = ""
+des_keyword = ""
+
+#import locationfuc
+import random, os
+import logging
+import get_data
+import google_map_api
+import time
 
 def location(bot, update):
     message = None
@@ -43,13 +57,16 @@ def ask_dep(bot, update):
         update.callback_query.edit_message_text("請輸入出發地的關鍵字（名稱、地址、經緯度）")
         updater.dispatcher.add_handler(MessageHandler(Filters.text, dep_text))
 
+
 def dep_text(bot,update):
+    dep_keyword = update.message.text
     
 
 
-updater = Updater("905272267:AAELvWp5b4SGt--CQRuuXQKHCxgNRz_M7lQ")
+updater = Updater("979392062:AAHsqCfx2cy0db1eMNV4qVKFkuaM-Xmh6C0")
 updater.dispatcher.add_handler(CommandHandler('start', start))
-updater.dispatcher.add_handler(CallbackQueryHandler(askDep))
+updater.dispatcher.add_handler(CallbackQueryHandler(ask_dep))
+print(dep_keyword)
 
 updater.start_polling()
 updater.idle()

@@ -12,6 +12,7 @@ flask = "*"
 gunicorn = "*"
 requests = "*"
 pprint = "*"
+geopy = "*"
 
 [requires]
 python_version = "3.7"
