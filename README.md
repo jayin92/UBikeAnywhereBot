@@ -43,31 +43,7 @@ tags: SITCON, bot, telegram
 
 
 ## 流程圖
-```flow
-st=>start: 用戶點擊開始
-ed=>end: 用戶開始導航
-ask=>condition: Bot 出發地使用現在位置(yes)或其他位置(no)?
-cur_loc=>inputoutput: 使用telegram傳送位置資訊
-other_loc=>inputoutput: 請用戶輸入出發地地址或名稱
-other_loc_api=>operation: 關鍵字交給Google Maps API，並回傳經緯度
-other_loc_re=>operation: Bot 利用經緯度回傳出發地在地圖上的位置
-con_ask=>condition: 用戶確認出發地位置是否正確?
-ask_des=>inputoutput: 請用戶輸入目的地地址或名稱
-ask_loc_api=>operation: 關鍵字交給Google Maps API，並回傳經緯度
-other_des_loc_re=>operation: Bot 利用經緯度回傳目的地在地圖上的位置
-con_des_ask=>condition: 用戶確認目的地位置是否正確?
-rou_pro=>inputoutput: 將Ubike站點、出發地、目的地以特定格式完成導航網址並回傳網址
-
-st->ask
-ask(yes)->cur_loc->ask_des
-ask(no)->other_loc(right)->other_loc_api->other_loc_re->con_ask
-con_ask(yes)->ask_des
-con_ask(no)->other_loc
-
-ask_des->ask_loc_api->other_des_loc_re->con_des_ask
-con_des_ask(yes)->rou_pro->ed
-con_des_ask(no)->ask_des
-```
+![flowchart](https://i.imgur.com/M7TcVkt.png)
 ## What We Need
 
 1. Ubike 即時站點資訊 
