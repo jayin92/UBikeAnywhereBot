@@ -21,9 +21,9 @@ def distance(loc1, loc2):
         a float equal to distance between two locations
     """
     dy = loc1[0] - loc2[0]
-    dx = loc1[1] - loc2[0]
+    dx = loc1[1] - loc2[1]
 
-    return math.sqrt(dx**2 + dy**2)
+    return dx**2 + dy**2
 
 
 def get_direction_url(departure, station1, station2, destination):
@@ -84,12 +84,33 @@ def get_station_availability(all_station_availability, stationUID, rent):
         return a interger
     """
     for station in all_station_availability:
-        if station["StationUID"] == stationUID):
+        if station["StationUID"] == stationUID:
             if rent:
                 return int(station["AvailableRentBikes"])
             else:
                 return int(station["AvailableReturnBikes"])
 
+
+
+def search(all_station_availability, all_station_info, cord, rent):
+    _min = distance((all_station_info[0]["StationPosition"]["PositionLat"], all_station_info[0]["StationPosition"]["PositionLon"]), cord)
+    _name = all_station_info[0]["StationName"]["Zh_tw"]
+    _UID = all_station_info[0]["StationUID"]
+    _cord = (all_station_info[0]["StationPosition"]["PositionLat"], all_station_info[0]["StationPosition"]["PositionLon"])
+    _bike = get_station_availability(all_station_availability, _UID, rent)
+
+    for station in all_station_info[1:]:
+        temp = distance((station["StationPosition"]["PositionLat"], station["StationPosition"]["PositionLon"]), cord)
+        if temp < _min:
+            _min = temp
+            _name = station["StationName"]["Zh_tw"]
+            _UID = station["StationUID"]
+            _cord = (station["StationPosition"]["PositionLat"], station["StationPosition"]["PositionLon"])
+            _bike = get_station_availability(all_station_availability, _UID, rent)
+
+
+
+    return {"name": _name, "UID": _UID, "cord": _cord, "bike": _bike,"rent": rent}
 
 
 # Load data from config.ini file
