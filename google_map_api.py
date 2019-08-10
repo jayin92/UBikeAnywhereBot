@@ -2,7 +2,7 @@ import requests
 
 #info from https://developers.google.com/places/web-service/search
 
-def google_map_api:
+def google_map_api(search_place):
 
     api_key = "AIzaSyD57zm-VEPud6YTbl6XKpu7kZIdlHxHZIQ"
 
@@ -25,4 +25,6 @@ def google_map_api:
         return output
     else:
         return None
+
+print(google_map_api(input()))
 
