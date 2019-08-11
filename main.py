@@ -47,7 +47,8 @@ def location_fix(bot, update, user_data):
     updater.dispatcher.add_handler(user_data["ask_des"])
 
 def des_text_current(bot, update, user_data):
-    updater.dispatcher.remove_handler(user_data["ask_des"])
+    if "ask_des" in user_data:
+        updater.dispatcher.remove_handler(user_data["ask_des"])
     user_data["des_keyword"] = update.message.text
     user_data["des_cord"] = google_map_api.google_map_api(user_data["des_keyword"])
     if(user_data["des_cord"] == "error"):
@@ -57,7 +58,8 @@ def des_text_current(bot, update, user_data):
         
     # update.message.reply_text(get_data.search(all_station_availability, all_station_info, cord, 1)["name"])
     else:
-        updater.dispatcher.remove_handler(user_data["ask_des"])
+        if "ask_des" in user_data:
+            updater.dispatcher.remove_handler(user_data["ask_des"])
 
         update.message.reply_location(user_data["des_cord"][0], user_data["des_cord"][1])
         yes1 = KeyboardButton("/是")
@@ -134,9 +136,10 @@ def dep_text(bot,update, user_data):
         updater.dispatcher.add_handler(user_data["dep_no"])
 
 def ask_des(bot, update, user_data):
-    
-    updater.dispatcher.remove_handler(user_data["dep_yes"])
-    updater.dispatcher.remove_handler(user_data["dep_no"])
+    if "dep_yes" in user_data:
+        updater.dispatcher.remove_handler(user_data["dep_yes"])
+    if "dep_no" in user_data:
+        updater.dispatcher.remove_handler(user_data["dep_no"])
     update.message.reply_text("請輸入目的地的關鍵字（名稱、地址、經緯度）", reply_markup=ReplyKeyboardRemove(True))
     user_data["ask_des"] = MessageHandler(Filters.text, des_text, pass_user_data=True)
     updater.dispatcher.add_handler(user_data["ask_des"])
@@ -153,7 +156,8 @@ def des_text(bot, update, user_data):
         
     # update.message.reply_text(get_data.search(all_station_availability, all_station_info, cord, 1)["name"])
     else:
-        updater.dispatcher.remove_handler(user_data["ask_des"])
+        if "ask_des" in user_data:
+            updater.dispatcher.remove_handler(user_data["ask_des"])
 
         update.message.reply_location(user_data["des_cord"][0], user_data["des_cord"][1])
         yes1 = KeyboardButton("/是")
@@ -169,8 +173,10 @@ def des_text(bot, update, user_data):
 
     
 def ubike_check(bot, update, user_data):
-    updater.dispatcher.remove_handler(user_data["des_yes"] )
-    updater.dispatcher.remove_handler(user_data["des_no"] )
+    if "des_yes" in user_data:
+        updater.dispatcher.remove_handler(user_data["des_yes"])
+    if "des_no" in user_data:
+        updater.dispatcher.remove_handler(user_data["des_no"] )
     user_data["dep_bike"] = get_data.search(all_station_availability, all_station_info, user_data["dep_cord"], 1)
     user_data["des_bike"] = get_data.search(all_station_availability, all_station_info, user_data["des_cord"], 0)
 
