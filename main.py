@@ -75,6 +75,30 @@ def des_text_current(bot, update, user_data):
         updater.dispatcher.add_handler(user_data["des_no"])
 
     
+def github(bot, update):
+    update.message.reply_text("https://github.com/jayin92/UBikeAnywhereBot")
+
+def info(bot, update):
+    info_str = """
+    API們：
+    PTX API: 
+    https://ptx.transportdata.tw/PTX/Service?categoryName=%E8%87%AA%E8%A1%8C%E8%BB%8A
+    Google Maps API: 
+    https://developers.google.com/maps/documentation/?hl=zh-tw
+    Firebase Dynamic Links: 
+    https://firebase.google.com/docs/dynamic-links
+    
+    Github:
+    https://github.com/jayin92/UBikeAnywhereBot
+    Developers:
+    @jayinnn
+    @kn71026
+    @yuanqiuye
+    @KJK0508
+    @heartietehhy
+    Max Pan
+    """
+    update.message.reply_text(info_str)
 def start(bot ,update, user_data):
     user = update.message.from_user
     print(user["username"])
@@ -217,6 +241,9 @@ def ubike_check(bot, update, user_data):
 
 updater = Updater("939455253:AAFQShx9QZ2WU31POxnGeeHyfuKJp73C3Lk")
 updater.dispatcher.add_handler(CommandHandler('start', start, pass_user_data=True))
+updater.dispatcher.add_handler(CommandHandler('github', github))
+updater.dispatcher.add_handler(CommandHandler('info', info))
+
 updater.dispatcher.add_handler(CallbackQueryHandler(ask_dep, pass_user_data=True))
 
 
