@@ -96,8 +96,9 @@ def ask_des(bot, update, user_data):
     updater.dispatcher.add_handler(user_data["ask_des"])
 
 def des_text(bot, update, user_data):
-    key = str(uuid4())    
     updater.dispatcher.remove_handler(user_data["ask_des"])
+    updater.dispatcher.remove_handler(user_data["dep_yes"])
+    updater.dispatcher.remove_handler(user_data["dep_no"] )
     user_data["des_keyword"] = update.message.text
     user_data["des_cord"] = google_map_api.google_map_api(user_data["des_keyword"])
     if(user_data["des_cord"] == "error"):
@@ -107,6 +108,8 @@ def des_text(bot, update, user_data):
         
     # update.message.reply_text(get_data.search(all_station_availability, all_station_info, cord, 1)["name"])
     else:
+        updater.dispatcher.remove_handler(user_data["ask_des"])
+
         update.message.reply_location(user_data["des_cord"][0], user_data["des_cord"][1])
         yes1 = KeyboardButton("/是")
         no1 = KeyboardButton("/否")
