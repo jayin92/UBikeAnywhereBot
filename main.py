@@ -139,7 +139,8 @@ def ask_des(bot, update, user_data):
     updater.dispatcher.add_handler(user_data["ask_des"])
 
 def des_text(bot, update, user_data):
-    updater.dispatcher.remove_handler(user_data["ask_des"])
+    if "ask_des" in user_data:
+        updater.dispatcher.remove_handler(user_data["ask_des"])
     user_data["des_keyword"] = update.message.text
     user_data["des_cord"] = google_map_api.google_map_api(user_data["des_keyword"])
     if(user_data["des_cord"] == "error"):
