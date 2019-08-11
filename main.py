@@ -37,7 +37,7 @@ def location(bot, update, user_data):
     user_data["dep_keyword"] = "現在位置"
     user_data["dep_cord"] = (update.message.location['latitude'], update.message.location['longitude'])
 
-    update.message.reply_text("請輸入目的地的關鍵字（名稱、地址、經緯度）")
+    update.message.reply_text("請輸入目的地的關鍵字（名稱、地址、經緯度）", reply_markup=ReplyKeyboardRemove(True))
     user_data["ask_des"] = MessageHandler(Filters.text, des_text, pass_user_data=True)
     updater.dispatcher.add_handler(user_data["ask_des"])
     
