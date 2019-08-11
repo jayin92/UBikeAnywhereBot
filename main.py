@@ -7,6 +7,7 @@ import time
 import logging
 import json
 import requests
+import configparser
 
 all_station_info = []
 all_station_availability = []
@@ -30,7 +31,8 @@ get_data.write_all_station_info()
 all_station_info = get_data.load_all_station_info()
 all_station_availability = get_data.load_all_station_availability()
 
-
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 def location(bot, update, user_data):
     user_data["ask_dep"] = MessageHandler(Filters.text, dep_text, pass_user_data=True)
@@ -81,16 +83,17 @@ def github(bot, update):
 def info(bot, update):
     info_str = """
     API們：
-    PTX API: 
+    PTX API： 
     https://ptx.transportdata.tw/PTX/Service?categoryName=%E8%87%AA%E8%A1%8C%E8%BB%8A
-    Google Maps API: 
+    Google Maps API： 
     https://developers.google.com/maps/documentation/?hl=zh-tw
-    Firebase Dynamic Links: 
+    Firebase Dynamic Links： 
     https://firebase.google.com/docs/dynamic-links
-    
-    Github:
+
+    Github：
     https://github.com/jayin92/UBikeAnywhereBot
-    Developers:
+
+    Developers：
     @jayinnn
     @kn71026
     @yuanqiuye
@@ -209,7 +212,6 @@ def ubike_check(bot, update, user_data):
     update.message.reply_text("🗺️路線：", reply_markup=ReplyKeyboardRemove(True))
     update.message.reply_text(user_data["route"])
     url = get_data.get_direction_url(user_data["dep_cord"], user_data["dep_bike"]["cord"], user_data["des_bike"]["cord"], user_data["des_keyword"])
-    user_data["header"] = {"Content-Type":"application/json", "reurl-api-key":"4070df69d794e53c114b353100ba214de3d6b7398d894494ab38acc62b055f6689"}
     user_data["data"] = {"url": url}
     data = {
         "dynamicLinkInfo": {
@@ -227,7 +229,7 @@ def ubike_check(bot, update, user_data):
         }
     }
     
-    api_url = url = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key={}".format("AIzaSyD57zm-VEPud6YTbl6XKpu7kZIdlHxHZIQ")
+    api_url = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key={}".format(config["FIREBASE"]["API_KEY"])
     user_data["r"] = requests.post(api_url, data=json.dumps(data))
     
     update.message.reply_text("🧭導航網址：")
@@ -239,7 +241,7 @@ def ubike_check(bot, update, user_data):
     update.message.reply_text("新的路線？")
     update.message.reply_text("/start")
 
-updater = Updater("939455253:AAFQShx9QZ2WU31POxnGeeHyfuKJp73C3Lk")
+updater = Updater(config["TELEGRAM"]["ACCESS_TOKEN"])
 updater.dispatcher.add_handler(CommandHandler('start', start, pass_user_data=True))
 updater.dispatcher.add_handler(CommandHandler('github', github))
 updater.dispatcher.add_handler(CommandHandler('info', info))
