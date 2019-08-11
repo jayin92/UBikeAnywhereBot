@@ -38,10 +38,46 @@ def location(bot, update, user_data):
     user_data["dep_cord"] = (update.message.location['latitude'], update.message.location['longitude'])
 
     update.message.reply_text("請輸入目的地的關鍵字（名稱、地址、經緯度）", reply_markup=ReplyKeyboardRemove(True))
-    user_data["ask_des"] = MessageHandler(Filters.text, des_text, pass_user_data=True)
+    user_data["ask_des"] = MessageHandler(Filters.text, des_text_current, pass_user_data=True)
     updater.dispatcher.add_handler(user_data["ask_des"])
+
+def location_fix(bot, update, user_data):
+    update.message.reply_text("請輸入目的地的關鍵字（名稱、地址、經緯度）", reply_markup=ReplyKeyboardRemove(True))
+    user_data["ask_des"] = MessageHandler(Filters.text, des_text_current, pass_user_data=True)
+    updater.dispatcher.add_handler(user_data["ask_des"])
+
+def des_text_current(bot, update, user_data):
+    updater.dispatcher.remove_handler(user_data["ask_des"])
+    user_data["des_keyword"] = update.message.text
+    user_data["des_cord"] = google_map_api.google_map_api(user_data["des_keyword"])
+    if(user_data["des_cord"] == "error"):
+        update.message.reply_text("❌找不到此地點")
+        update.message.reply_text("重新開始？\n/start")
+        updater.dispatcher.add_handler(CommandHandler("start", start, pass_user_data=True))
+        
+    # update.message.reply_text(get_data.search(all_station_availability, all_station_info, cord, 1)["name"])
+    else:
+        updater.dispatcher.remove_handler(user_data["ask_des"])
+
+        update.message.reply_location(user_data["des_cord"][0], user_data["des_cord"][1])
+        yes1 = KeyboardButton("/是")
+        no1 = KeyboardButton("/否")
+
+        reply_keyboard_markup1 = ReplyKeyboardMarkup([[yes1],[no1]])
+
+        user_data["des_yes"] = CommandHandler("是", ubike_check, pass_user_data=True)
+        user_data["des_no"] = CommandHandler("否", location_fix, pass_user_data=True)
+        update.message.reply_text("目的地是否正確", reply_markup=reply_keyboard_markup1)
+        updater.dispatcher.add_handler(user_data["des_yes"])
+        updater.dispatcher.add_handler(user_data["des_no"])
+
     
 def start(bot ,update, user_data):
+    if "des_yes" in user_data:
+        updater.dispatcher.remove_handler(user_data["des_yes"])
+    if "des_no" in user_data:
+        updater.dispatcher.remove_handler(user_data["des_no"])
+
 
     get_data.write_all_station_info()
     get_data.write_all_station_availability()
@@ -66,6 +102,8 @@ def ask_dep(bot, update, user_data):
 def dep_text(bot,update, user_data):
     global dep_cord, dep_keyword, a, dep_yes, dep_no, des_yes, des_no
     updater.dispatcher.remove_handler(user_data["ask_dep"])
+
+
     user_data["dep_keyword"] = update.message.text
     user_data["dep_cord"] = google_map_api.google_map_api(user_data["dep_keyword"])
     if(user_data["dep_cord"] == "error"):
@@ -87,18 +125,15 @@ def dep_text(bot,update, user_data):
         updater.dispatcher.add_handler(user_data["dep_no"])
 
 def ask_des(bot, update, user_data):
-    updater.dispatcher.remove_handler(user_data["ask_dep"])
-
+    
     updater.dispatcher.remove_handler(user_data["dep_yes"])
-    updater.dispatcher.remove_handler(user_data["dep_no"] )
+    updater.dispatcher.remove_handler(user_data["dep_no"])
     update.message.reply_text("請輸入目的地的關鍵字（名稱、地址、經緯度）", reply_markup=ReplyKeyboardRemove(True))
     user_data["ask_des"] = MessageHandler(Filters.text, des_text, pass_user_data=True)
     updater.dispatcher.add_handler(user_data["ask_des"])
 
 def des_text(bot, update, user_data):
     updater.dispatcher.remove_handler(user_data["ask_des"])
-    updater.dispatcher.remove_handler(user_data["dep_yes"])
-    updater.dispatcher.remove_handler(user_data["dep_no"] )
     user_data["des_keyword"] = update.message.text
     user_data["des_cord"] = google_map_api.google_map_api(user_data["des_keyword"])
     if(user_data["des_cord"] == "error"):
