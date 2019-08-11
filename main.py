@@ -109,7 +109,8 @@ def ask_dep(bot, update, user_data):
 
 def dep_text(bot,update, user_data):
     global dep_cord, dep_keyword, a, dep_yes, dep_no, des_yes, des_no
-    updater.dispatcher.remove_handler(user_data["ask_dep"])
+    if "ask_dep" in user_data:
+        updater.dispatcher.remove_handler(user_data["ask_dep"])
 
 
     user_data["dep_keyword"] = update.message.text
