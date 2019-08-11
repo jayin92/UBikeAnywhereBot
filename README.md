@@ -2,9 +2,12 @@
 
 ***目前專案可能還有bugs，有發現bugs請聯絡我，[https://t.me/jayinnn](https://t.me/jayinnn)***
 
+**感謝中央大學網管提供伺服器m(｡≧ｴ≦｡)m**
 ## Introduction
 UbikeAnywhereBot 是一款於2019 SITCON 夏令營中開發的Ubike路線規劃Telegram Bot，
 可以讓使用者快速的找到最近的且可用的Ubike站點，並藉由Google Maps導航至目的地。
+
+[Introduction Slide](https://docs.google.com/presentation/d/1lNG2SYwuUna-86FPnBUql_JN1xgufkv2j6Hai_BKe2E/edit?usp=sharing)
 
 ## Usage
 Bot 首先會詢問使用者的出發地及目的地（支援模糊搜尋），並利用政府所提供的PTX API取的全台Ubike站點名稱、經緯度、已停車輛、空位，再利用經緯度及已停車輛或空位算出與出發地和目的地可用且最近的Ubike站點，在將這四個位置輸入Google Maps的導航，就完成了一次操作。
