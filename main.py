@@ -44,7 +44,7 @@ def location(bot, update, user_data):
 def start(bot ,update, user_data):
 
     get_data.write_all_station_info()
-    get_data.write_all_station_availability()   
+    get_data.write_all_station_availability()
     #要不要手動輸入
     now_location = KeyboardButton("/現在位置", False, True)
     other_location = KeyboardButton("/其他位置")
@@ -87,6 +87,8 @@ def dep_text(bot,update, user_data):
         updater.dispatcher.add_handler(user_data["dep_no"])
 
 def ask_des(bot, update, user_data):
+    updater.dispatcher.remove_handler(user_data["ask_dep"])
+
     updater.dispatcher.remove_handler(user_data["dep_yes"])
     updater.dispatcher.remove_handler(user_data["dep_no"] )
     update.message.reply_text("請輸入目的地的關鍵字（名稱、地址、經緯度）", reply_markup=ReplyKeyboardRemove(True))
@@ -130,10 +132,27 @@ def ubike_check(bot, update, user_data):
     url = get_data.get_direction_url(user_data["dep_cord"], user_data["dep_bike"]["cord"], user_data["des_bike"]["cord"], user_data["des_keyword"])
     user_data["header"] = {"Content-Type":"application/json", "reurl-api-key":"4070df69d794e53c114b353100ba214de3d6b7398d894494ab38acc62b055f6689"}
     user_data["data"] = {"url": url}
+    data = {
+        "dynamicLinkInfo": {
+            "domainUriPrefix": "https://bikeanywhere.page.link",
+            "link": url,
+            "androidInfo": {
+            "androidPackageName": "com.google.android.gms.maps",
+            },
+            "iosInfo": {
+            "iosBundleId": "com.google.Maps",
+            },
+        },
+        "suffix": {
+            "option": "SHORT"
+        }
+    }
     
-    user_data["r"] = requests.post("https://api.reurl.cc/shorten", headers=user_data["header"], data=json.dumps(user_data["data"]))
+    api_url = url = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key={}".format("AIzaSyD57zm-VEPud6YTbl6XKpu7kZIdlHxHZIQ")
+    user_data["r"] = requests.post(api_url, data=json.dumps(data))
+    
     update.message.reply_text("🧭導航網址：")
-    update.message.reply_text(user_data["r"].json()["short_url"])
+    update.message.reply_text(user_data["r"].json()["shortLink"])
     
     update.message.reply_text(" 🚲 站點資訊：")
     update.message.reply_text("▶️{}（借車站）\n目前車輛數目：{}".format(user_data["dep_bike"]["name"], user_data["dep_bike"]["bike"]))
