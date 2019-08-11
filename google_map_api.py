@@ -21,10 +21,13 @@ def google_map_api(search_place):
 
     if result.status_code == 200:
         json = result.json()
-        lat = json["results"][0]["geometry"]["location"]["lat"]
-        lng = json["results"][0]["geometry"]["location"]["lng"]
-        output = (lat, lng)
-        return output
+        if len(json["results"]) > 0:
+            lat = json["results"][0]["geometry"]["location"]["lat"]
+            lng = json["results"][0]["geometry"]["location"]["lng"]
+            output = (lat, lng)
+            return output
+        else:
+            return "error"
     else:
         return None
 
