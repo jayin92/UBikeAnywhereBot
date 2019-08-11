@@ -25,8 +25,6 @@ des_no = ""
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",level=logging.INFO)
 
 
-get_data.write_all_station_info()
-get_data.write_all_station_availability()
 
 all_station_info = get_data.load_all_station_info()
 all_station_availability = get_data.load_all_station_availability()
@@ -44,6 +42,9 @@ def location(bot, update, user_data):
     updater.dispatcher.add_handler(user_data["ask_des"])
     
 def start(bot ,update, user_data):
+
+    get_data.write_all_station_info()
+    get_data.write_all_station_availability()   
     #要不要手動輸入
     now_location = KeyboardButton("/現在位置", False, True)
     other_location = KeyboardButton("/其他位置")
