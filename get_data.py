@@ -37,7 +37,7 @@ def get_direction_url(departure, station1, station2, destination):
         station2: the station near destination, station's coordinates
         destination: destination's name or address or coordinates
     """
-    url = "https://www.google.com/maps/dir/?api=1&origin={}&destination={}&waypoints={}|{}&travelmode=motorcycling".format(departure, destination, station1, station2)
+    url = "https://www.google.com/maps/dir/?api=1&origin={}&destination={}&waypoints={}|{}&travelmode=walking".format(departure, destination, station1, station2)
 
     return url
 
