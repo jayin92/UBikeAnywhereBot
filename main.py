@@ -24,7 +24,8 @@ des_no = ""
 
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",level=logging.INFO)
 
-
+get_data.write_all_station_availability()
+get_data.write_all_station_info()
 
 all_station_info = get_data.load_all_station_info()
 all_station_availability = get_data.load_all_station_availability()
