@@ -149,7 +149,7 @@ def des_text(bot, update, user_data):
         updater.dispatcher.remove_handler(user_data["ask_des"])
     user_data["des_keyword"] = update.message.text
     user_data["des_cord"] = google_map_api.google_map_api(user_data["des_keyword"])
-    if(user_data["des_cord"] == "error"):
+    if(user_data["des_cord"] == "error" or user_data["des_cord"] == None):
         update.message.reply_text("❌找不到此地點")
         update.message.reply_text("重新開始？\n/start")
         updater.dispatcher.add_handler(CommandHandler("start", start, pass_user_data=True))
