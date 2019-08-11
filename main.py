@@ -75,7 +75,6 @@ def des_text_current(bot, update, user_data):
 def start(bot ,update, user_data):
     user = update.message.from_user
     print(user["username"])
-    print(update.)
     if "des_yes" in user_data:
         updater.dispatcher.remove_handler(user_data["des_yes"])
     if "des_no" in user_data:
