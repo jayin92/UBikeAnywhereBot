@@ -77,6 +77,12 @@ def start(bot ,update, user_data):
         updater.dispatcher.remove_handler(user_data["des_yes"])
     if "des_no" in user_data:
         updater.dispatcher.remove_handler(user_data["des_no"])
+    if "dep_no" in user_data:
+        updater.dispatcher.remove_handler(user_data["dep_no"])
+    if "dep_yes" in user_data:
+        updater.dispatcher.remove_handler(user_data["dep_yes"])
+
+
 
 
     get_data.write_all_station_info()
