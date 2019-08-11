@@ -1,6 +1,6 @@
 # UbikeAnywhereBot
 
-***目前專案可能還有bugs，有發現bugs請聯絡我，[t.me/jayinnn](t.me/jayinnn)***
+***目前專案可能還有bugs，有發現bugs請聯絡我，[https://t.me/jayinnn](https://t.me/jayinnn)***
 
 ## Introduction
 UbikeAnywhereBot 是一款於2019 SITCON 夏令營中開發的Ubike路線規劃Telegram Bot，
