@@ -105,6 +105,7 @@ def info(bot, update):
 def start(bot ,update, user_data):
     user = update.message.from_user
     print(user["username"])
+    user_data = {}
     if "des_yes" in user_data:
         updater.dispatcher.remove_handler(user_data["des_yes"])
     if "des_no" in user_data:
