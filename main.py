@@ -1,5 +1,6 @@
 import get_data
 import google_map_api
+
 from uuid import uuid4
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, Handler, StringCommandHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Location, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
@@ -102,21 +103,11 @@ def info(bot, update):
     Max Pan
     """
     update.message.reply_text(info_str)
+
 def start(bot ,update, user_data):
     user = update.message.from_user
     print(user["username"])
-    user_data = {}
-    if "des_yes" in user_data:
-        updater.dispatcher.remove_handler(user_data["des_yes"])
-    if "des_no" in user_data:
-        updater.dispatcher.remove_handler(user_data["des_no"])
-    if "dep_no" in user_data:
-        updater.dispatcher.remove_handler(user_data["dep_no"])
-    if "dep_yes" in user_data:
-        updater.dispatcher.remove_handler(user_data["dep_yes"])
-
-
-
+    user_data = dict()
 
     get_data.write_all_station_info()
     get_data.write_all_station_availability()
