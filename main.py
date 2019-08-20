@@ -60,7 +60,6 @@ def des_text_current(bot, update, user_data):
         update.message.reply_text("重新開始？\n/start")
         updater.dispatcher.add_handler(CommandHandler("start", start, pass_user_data=True))
         
-    # update.message.reply_text(get_data.search(all_station_availability, all_station_info, cord, 1)["name"])
     else:
         if "ask_des" in user_data:
             updater.dispatcher.remove_handler(user_data["ask_des"])
@@ -78,9 +77,6 @@ def des_text_current(bot, update, user_data):
         updater.dispatcher.add_handler(user_data["des_no"])
 
     
-def github(bot, update):
-    update.message.reply_text("https://github.com/jayin92/UBikeAnywhereBot")
-
 def info(bot, update):
     info_str = """
     API們：
@@ -107,7 +103,7 @@ def info(bot, update):
 def start(bot ,update, user_data):
     user = update.message.from_user
     print(user["username"])
-    user_data = dict()
+    user_data.clear()
 
     get_data.write_all_station_info()
     get_data.write_all_station_availability()
