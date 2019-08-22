@@ -1,7 +1,6 @@
 import get_data
 import google_map_api
 
-from uuid import uuid4
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, Handler, StringCommandHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Location, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
 import time
@@ -18,7 +17,7 @@ des_cord = (1,1)
 
 des_keyword = ""
 dep_keyword = ""
-a = ""
+字典a = ""
 b = ""
 dep_yes = ""
 dep_no = ""
