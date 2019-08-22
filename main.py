@@ -9,6 +9,7 @@ import logging
 import json
 import requests
 import configparser
+import time
 
 all_station_info = []
 all_station_availability = []
@@ -28,9 +29,7 @@ logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 get_data.write_all_station_availability()
 get_data.write_all_station_info()
-
-all_station_info = get_data.load_all_station_info()
-all_station_availability = get_data.load_all_station_availability()
+last_update = time.time()
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -101,12 +100,17 @@ def info(bot, update):
     update.message.reply_text(info_str)
 
 def start(bot ,update, user_data):
+    global last_update, all_station_info, all_station_availability
     user = update.message.from_user
     print(user["username"])
     user_data.clear()
-
-    get_data.write_all_station_info()
-    get_data.write_all_station_availability()
+    if time.time()-last_update > 300:
+        get_data.write_all_station_info()
+        get_data.write_all_station_availability()
+        last_update = time.time()
+    
+    all_station_info = get_data.load_all_station_info()
+    all_station_availability = get_data.load_all_station_availability()
     #要不要手動輸入
     now_location = KeyboardButton("/現在位置", False, True)
     other_location = KeyboardButton("/其他位置")
@@ -231,7 +235,6 @@ def ubike_check(bot, update, user_data):
 
 updater = Updater(config["TELEGRAM"]["ACCESS_TOKEN"])
 updater.dispatcher.add_handler(CommandHandler('start', start, pass_user_data=True))
-updater.dispatcher.add_handler(CommandHandler('github', github))
 updater.dispatcher.add_handler(CommandHandler('info', info))
 
 updater.dispatcher.add_handler(CallbackQueryHandler(ask_dep, pass_user_data=True))
