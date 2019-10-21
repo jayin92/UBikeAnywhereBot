@@ -17,7 +17,7 @@ des_cord = (1,1)
 
 des_keyword = ""
 dep_keyword = ""
-字典a = ""
+a = ""
 b = ""
 dep_yes = ""
 dep_no = ""
@@ -107,9 +107,9 @@ def start(bot ,update, user_data):
         get_data.write_all_station_info()
         get_data.write_all_station_availability()
         last_update = time.time()
-    
     all_station_info = get_data.load_all_station_info()
     all_station_availability = get_data.load_all_station_availability()
+    
     #要不要手動輸入
     now_location = KeyboardButton("/現在位置", False, True)
     other_location = KeyboardButton("/其他位置")
@@ -122,7 +122,7 @@ def start(bot ,update, user_data):
     
     
 def ask_dep(bot, update, user_data):
-        #手動enter location
+    # 手動enter location
     user_data["ask_dep"] = MessageHandler(Filters.text, dep_text, pass_user_data=True)
     update.message.reply_text("請輸入出發地的關鍵字（名稱、地址、經緯度）", reply_markup=ReplyKeyboardRemove(True))
     updater.dispatcher.add_handler(user_data["ask_dep"])
@@ -173,7 +173,6 @@ def des_text(bot, update, user_data):
         update.message.reply_text("重新開始？\n/start")
         updater.dispatcher.add_handler(CommandHandler("start", start, pass_user_data=True))
         
-    # update.message.reply_text(get_data.search(all_station_availability, all_station_info, cord, 1)["name"])
     else:
         if "ask_des" in user_data:
             updater.dispatcher.remove_handler(user_data["ask_des"])
@@ -200,13 +199,12 @@ def ubike_check(bot, update, user_data):
     user_data["des_bike"] = get_data.search(all_station_availability, all_station_info, user_data["des_cord"], 0)
 
     user_data["route"] = "{}➡️{}➡️{}➡️{}".format(user_data["dep_keyword"], user_data["dep_bike"]["name"], user_data["des_bike"]["name"], user_data["des_keyword"])
-    update.message.reply_text("🗺️路線：", reply_markup=ReplyKeyboardRemove(True))
-    update.message.reply_text(user_data["route"])
+    update.message.reply_text("🗺️路線：\n{}".format(user_data["route"]), reply_markup=ReplyKeyboardRemove(True))
     url = get_data.get_direction_url(user_data["dep_cord"], user_data["dep_bike"]["cord"], user_data["des_bike"]["cord"], user_data["des_keyword"])
     user_data["data"] = {"url": url}
     data = {
         "dynamicLinkInfo": {
-            "domainUriPrefix": "https://bikeanywhere.page.link",
+            "domainUriPrefix": "https://ubikeanywhere.page.link",
             "link": url,
             "androidInfo": {
             "androidPackageName": "com.google.android.gms.maps",
@@ -223,14 +221,9 @@ def ubike_check(bot, update, user_data):
     api_url = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key={}".format(config["FIREBASE"]["API_KEY"])
     user_data["r"] = requests.post(api_url, data=json.dumps(data))
     
-    update.message.reply_text("🧭導航網址：")
-    update.message.reply_text(user_data["r"].json()["shortLink"])
-    
-    update.message.reply_text(" 🚲 站點資訊：")
-    update.message.reply_text("▶️{}（借車站）\n目前車輛數目：{}".format(user_data["dep_bike"]["name"], user_data["dep_bike"]["bike"]))
-    update.message.reply_text("▶️{}（還車站）\n目前空位數目：{}".format(user_data["des_bike"]["name"], user_data["des_bike"]["bike"]))
-    update.message.reply_text("新的路線？")
-    update.message.reply_text("/start")
+    update.message.reply_text("🧭導航網址：{}".format(user_data["r"].json()["shortLink"]))    
+    update.message.reply_text(" 🚲 站點資訊：\n{}\n{}".format("▶️{}（借車站）\n目前車輛數目：{}".format(user_data["dep_bike"]["name"], user_data["dep_bike"]["bike"]), "▶️{}（還車站）\n目前空位數目：{}".format(user_data["des_bike"]["name"], user_data["des_bike"]["bike"])))
+    update.message.reply_text("新的路線？\n/start")
 
 updater = Updater(config["TELEGRAM"]["ACCESS_TOKEN"])
 updater.dispatcher.add_handler(CommandHandler('start', start, pass_user_data=True))
