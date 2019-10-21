@@ -76,7 +76,7 @@ def des_text_current(bot, update, user_data):
 
     
 def info(bot, update):
-    info_str = """
+    info_str_1 = """
     API們：
     PTX API： 
     https://ptx.transportdata.tw/PTX/Service?categoryName=%E8%87%AA%E8%A1%8C%E8%BB%8A
@@ -84,10 +84,12 @@ def info(bot, update):
     https://developers.google.com/maps/documentation/?hl=zh-tw
     Firebase Dynamic Links： 
     https://firebase.google.com/docs/dynamic-links
-
+    """
+    info_str_2 = """
     Github：
     https://github.com/jayin92/UBikeAnywhereBot
-
+    """
+    info_str_3 = """
     Developers：
     @jayinnn
     @kn71026
@@ -95,8 +97,12 @@ def info(bot, update):
     @KJK0508
     @heartietehhy
     Max Pan
+    資料介接「交通部PTX平臺」
+    https://ptx.transportdata.tw/PTX/logo.png
     """
-    update.message.reply_text(info_str)
+    update.message.reply_text(info_str_1)
+    update.message.reply_text(info_str_2)
+    update.message.reply_text(info_str_3)
 
 def start(bot ,update, user_data):
     global last_update, all_station_info, all_station_availability
