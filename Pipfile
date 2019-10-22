@@ -13,6 +13,7 @@ gunicorn = "*"
 requests = "*"
 pprint = "*"
 geopy = "*"
+notify-run = "*"
 
 [requires]
 python_version = "3.7"

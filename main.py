@@ -9,6 +9,7 @@ import json
 import requests
 import configparser
 import time
+from notify_run import Notify
 
 all_station_info = []
 all_station_availability = []
@@ -106,8 +107,10 @@ def info(bot, update):
 
 def start(bot ,update, user_data):
     global last_update, all_station_info, all_station_availability
+    notify = Notify()
     user = update.message.from_user
     print(user["username"])
+    notify.send(user["username"])
     user_data.clear()
     if time.time()-last_update > 300:
         get_data.write_all_station_info()
