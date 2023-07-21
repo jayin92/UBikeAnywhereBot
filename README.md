@@ -1,5 +1,7 @@
 # UbikeAnywhereBot
 
+**Update: Becuase PTX API has already retired. This bot can't work for now.**
+
 ***目前專案可能還有bugs，有發現bugs請聯絡我，[https://t.me/jayinnn](https://t.me/jayinnn)***
 
 **感謝中央大學網管提供伺服器m(｡≧ｴ≦｡)m**
